@@ -66,7 +66,8 @@ PXDFILES = \
 	interactions.pxd \
 	invalidateSystem.pxd \
 	thermostat.pxd \
-	utils.pxd
+	utils.pxd \
+	h5md.pxd
 # lb has not been updated yet
 
 # Python files have to be copied to the build dir
