@@ -1,0 +1,8 @@
+#!/bin/sh
+if test -n "$PYTHONPATH"; then
+    PYTHONPATH=$PYTHONPATH:/home/sascha/cuda-workspace/EspressoMasterV02/espresso
+else
+    PYTHONPATH=/home/sascha/cuda-workspace/EspressoMasterV02/espresso
+fi
+export PYTHONPATH
+exec /usr/bin/python $@
