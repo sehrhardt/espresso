@@ -76,26 +76,36 @@ h5=h5md.h5md("lj_liquid_h5md.h5",es)
 #############################################################
 #H5MD: Read Positions from h5-file to Espresso
 if (h5_file_already_exists): #Check if file already exists -> Keep positions
-    h5.h5_read_from_file("pos","A",0)
-    h5.h5_read_from_file("image","A",0)
-    h5.h5_read_from_file("v","A",0)
-    h5.h5_read_from_file("f","A",0)
-    h5.h5_read_from_file("type","A") 
-    h5.h5_read_from_file("mass","A") 
-    h5.h5_read_from_file("id","A")
-
+#   h5.h5_read_from_file("pos","A",0)
+#   h5.h5_read_from_file("image","A",0)
+#   h5.h5_read_from_file("v","A",0)
+#   h5.h5_read_from_file("f","A",0)
+#   h5.h5_read_from_file("type","A") 
+#   h5.h5_read_from_file("mass","A") 
+#   h5.h5_read_from_file("id","A")
+  h5.h5_read_particles.q(0,"A")
+  h5.h5_read_particles.image(0,"A")
+  h5.h5_read_particles.v(0,"A")
+  h5.h5_read_particles.f(0,"A")
+  h5.h5_read_particles.type("A")
+  h5.h5_read_particles.mass("A")
+  h5.h5_read_particles.id("A")
+  h5.h5_read_particles.box(0,"A")
+  h5.h5_read_observable(0,"energies","A")
 else: #Random Positions
   for i in range(n_part):
     es.part[i].pos=numpy.random.random(3)*es.glob.box_l
     es.part[i].type=i%3
-  h5.h5_write_to_file("pos","A",0)
-  h5.h5_write_to_file("image","A",0)
-  h5.h5_write_to_file("v","A",0)
-  h5.h5_write_to_file("f","A",0)
-  h5.h5_write_to_file("type","A")
-  h5.h5_write_to_file("mass","A")
-  h5.h5_write_to_file("id","A")
-  h5.h5_write_observable("A","energies",[2,3,4],0)
+  h5.h5_write_particles.q(0,"A")
+  h5.h5_write_particles.image(0,"A")
+  h5.h5_write_particles.v(0,"A")
+  h5.h5_write_particles.f(0,"A")
+  h5.h5_write_particles.type("A")
+  h5.h5_write_particles.mass("A")
+  h5.h5_write_particles.id("A")
+  h5.h5_write_particles.box(0,"A")
+  h5.h5_write_observable(0,[2,3,4],"energies","A")
+  
 
 # Else
 #############################################################
@@ -176,18 +186,15 @@ for i in range(0,int_n_times):
   print energies
   obs_file.write('{ time %s } %s\n' % (es.glob.time,energies))
   #H5MD: Write Positions, Forces etc.
-  h5.h5_write_to_file("pos","A",i)
-  h5.h5_write_to_file("image","A",i)
-  h5.h5_write_to_file("v","A",i)
-  h5.h5_write_to_file("f","A",i)
-  h5.h5_write_observable("A","energies",[2,3,4],i)
-#H5MD: Write species, mass etc.
-h5.h5_write_to_file("type","A") 
-h5.h5_write_to_file("mass","A") 
-h5.h5_write_to_file("id","A") 
+  h5.h5_write_particles.q(i,"A")
+  h5.h5_write_particles.image(i,"A")
+  h5.h5_write_particles.v(i,"A")
+  h5.h5_write_particles.f(i,"A")
+  h5.h5_write_particles.box(i,"A")
+  h5.h5_write_observable(i,[2,3,4],"energies","A")
 #H5MD: Write VMD parameters
-h5.h5_write_vmd_parameters()
-
+h5.h5_write_vmd_parameters("A")
+h5.h5_read_vmd_parameters("A")#xxxxxxxxxxxxxxxx
 
 # write end configuration
 end_file = open("pylj_liquid.end", "w")
@@ -204,6 +211,5 @@ es._espressoHandle.die()
 
 # terminate program
 print "\n\nFinished"
-print es.glob.time_step #xxx
-print es.glob.time #xxx
-
+print "XXXXXXXXXXX",es.glob.box_l[0]
+del h5md #xxx
