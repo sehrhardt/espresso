@@ -74,15 +74,8 @@ h5=h5md.h5md("lj_liquid_h5md.h5",es)
 
 # Positions
 #############################################################
-#H5MD: Read Positions from h5-file to Espresso
+#H5MD: Read positions from h5-file and store them in Espresso
 if (h5_file_already_exists): #Check if file already exists -> Keep positions
-#   h5.h5_read_from_file("pos","A",0)
-#   h5.h5_read_from_file("image","A",0)
-#   h5.h5_read_from_file("v","A",0)
-#   h5.h5_read_from_file("f","A",0)
-#   h5.h5_read_from_file("type","A") 
-#   h5.h5_read_from_file("mass","A") 
-#   h5.h5_read_from_file("id","A")
   h5.h5_read_particles.q(0,"A")
   h5.h5_read_particles.image(0,"A")
   h5.h5_read_particles.v(0,"A")

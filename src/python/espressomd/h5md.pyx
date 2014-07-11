@@ -15,9 +15,9 @@ class h5md(object):
     h5_file = h5py.File(filename,accesstype)
     return h5_file
   
-  #############################################################################################
-  ###################################### PARTICLES GROUP ###################################### 
-  #############################################################################################
+  #####################################################################################################################################
+  ########################################################### PARTICLES GROUP ######################################################### 
+  #####################################################################################################################################
   #WRITE CLASS
   class h5_write_particles(object):
     def __init__(self,self_h5md_class):
@@ -29,16 +29,18 @@ class h5md(object):
         self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_create_particles_position_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/step"]    
+      self.self_h5md_class.h5_write_particles_position_step_dataset(self.self_h5md_class.particles_position_step_dataset,timestep)  
+        
       try:
         self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_create_particles_position_time_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/time"]     
+        self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/time"] 
+      self.self_h5md_class.h5_write_particles_position_time_dataset(self.self_h5md_class.particles_position_time_dataset,timestep)  
+            
       try:
         self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_create_particles_position_value_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/value"]         
-      self.self_h5md_class.h5_write_particles_position_step_dataset(self.self_h5md_class.particles_position_step_dataset,timestep)
-      self.self_h5md_class.h5_write_particles_position_time_dataset(self.self_h5md_class.particles_position_time_dataset,timestep)
+        self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/value"]              
       self.self_h5md_class.h5_write_particles_position_value_dataset(self.self_h5md_class.particles_position_value_dataset,timestep)
       
     #Image
@@ -47,16 +49,18 @@ class h5md(object):
         self.self_h5md_class.particles_image_step_dataset=self.self_h5md_class.h5_create_particles_image_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_image_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/image/step"]    
+      self.self_h5md_class.h5_write_particles_image_step_dataset(self.self_h5md_class.particles_image_step_dataset,timestep)  
+        
       try:
         self.self_h5md_class.particles_image_time_dataset=self.self_h5md_class.h5_create_particles_image_time_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_image_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/image/time"]  
+      self.self_h5md_class.h5_write_particles_image_time_dataset(self.self_h5md_class.particles_image_time_dataset,timestep) 
+        
       try:
         self.self_h5md_class.particles_image_value_dataset=self.self_h5md_class.h5_create_particles_image_value_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_image_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/image/value"]      
-      self.self_h5md_class.h5_write_particles_image_step_dataset(self.self_h5md_class.particles_image_step_dataset,timestep)
-      self.self_h5md_class.h5_write_particles_image_time_dataset(self.self_h5md_class.particles_image_time_dataset,timestep)
       self.self_h5md_class.h5_write_particles_image_value_dataset(self.self_h5md_class.particles_image_value_dataset,timestep)   
         
     #Velocity
@@ -65,16 +69,18 @@ class h5md(object):
         self.self_h5md_class.particles_velocity_step_dataset=self.self_h5md_class.h5_create_particles_velocity_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_velocity_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/velocity/step"] 
+      self.self_h5md_class.h5_write_particles_velocity_step_dataset(self.self_h5md_class.particles_velocity_step_dataset,timestep)  
+        
       try:
         self.self_h5md_class.particles_velocity_time_dataset=self.self_h5md_class.h5_create_particles_velocity_time_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_velocity_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/velocity/time"]  
+      self.self_h5md_class.h5_write_particles_velocity_time_dataset(self.self_h5md_class.particles_velocity_time_dataset,timestep)  
+        
       try:
         self.self_h5md_class.particles_velocity_value_dataset=self.self_h5md_class.h5_create_particles_velocity_value_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_velocity_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/velocity/value"]          
-      self.self_h5md_class.h5_write_particles_velocity_step_dataset(self.self_h5md_class.particles_velocity_step_dataset,timestep)
-      self.self_h5md_class.h5_write_particles_velocity_time_dataset(self.self_h5md_class.particles_velocity_time_dataset,timestep)
       self.self_h5md_class.h5_write_particles_velocity_value_dataset(self.self_h5md_class.particles_velocity_value_dataset,timestep) 
       
     #Force
@@ -82,17 +88,19 @@ class h5md(object):
       try:
         self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_create_particles_force_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/step"]      
+        self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/step"] 
+      self.self_h5md_class.h5_write_particles_force_step_dataset(self.self_h5md_class.particles_force_step_dataset,timestep) 
+             
       try:
         self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_create_particles_force_time_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/time"]    
+        self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/time"]  
+      self.self_h5md_class.h5_write_particles_force_time_dataset(self.self_h5md_class.particles_force_time_dataset,timestep)  
+          
       try:
         self.self_h5md_class.particles_force_value_dataset=self.self_h5md_class.h5_create_particles_force_value_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         self.self_h5md_class.particles_force_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/value"]     
-      self.self_h5md_class.h5_write_particles_force_step_dataset(self.self_h5md_class.particles_force_step_dataset,timestep)
-      self.self_h5md_class.h5_write_particles_force_time_dataset(self.self_h5md_class.particles_force_time_dataset,timestep)
       self.self_h5md_class.h5_write_particles_force_value_dataset(self.self_h5md_class.particles_force_value_dataset,timestep)      
       
     #Species
@@ -100,7 +108,7 @@ class h5md(object):
       try:
         self.self_h5md_class.particles_species_dataset=self.self_h5md_class.h5_create_particles_species_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
+        self.self_h5md_class.particles_species_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/species/value"]   
       self.self_h5md_class.h5_write_particles_species_dataset(self.self_h5md_class.particles_species_dataset)  
          
     #ID
@@ -108,7 +116,7 @@ class h5md(object):
       try:
         self.self_h5md_class.particles_id_dataset=self.self_h5md_class.h5_create_particles_id_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
+        self.self_h5md_class.particles_id_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/id/value"]
       self.self_h5md_class.h5_write_particles_id_dataset(self.self_h5md_class.particles_id_dataset) 
           
     #Mass
@@ -116,7 +124,7 @@ class h5md(object):
       try:
         self.self_h5md_class.particles_mass_dataset=self.self_h5md_class.h5_create_particles_mass_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
+        self.self_h5md_class.particles_mass_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/mass/value"]
       self.self_h5md_class.h5_write_particles_mass_dataset(self.self_h5md_class.particles_mass_dataset)   
       
     #Box
@@ -124,28 +132,29 @@ class h5md(object):
       try:
         self.self_h5md_class.particles_box_dimension_dataset=self.self_h5md_class.h5_create_particles_box_dimension_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
-      self.self_h5md_class.h5_write_particles_box_dimension_dataset(self.self_h5md_class.particles_box_dimension_dataset)     
+        self.self_h5md_class.particles_box_dimension_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/dimension"]
+      self.self_h5md_class.h5_write_particles_box_dimension_dataset(self.self_h5md_class.particles_box_dimension_dataset)  
+         
       try:
         self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_create_particles_box_boundary_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
+        self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/boundary"]
       self.self_h5md_class.h5_write_particles_box_boundary_dataset(self.self_h5md_class.particles_box_boundary_dataset) 
       
       try:
         self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_create_particles_box_edges_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
+        self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/edges/step"]
       self.self_h5md_class.h5_write_particles_box_edges_step_dataset(self.self_h5md_class.particles_box_edges_step_dataset,timestep) 
       try:
         self.self_h5md_class.particles_box_edges_time_dataset=self.self_h5md_class.h5_create_particles_box_edges_time_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
+        self.self_h5md_class.particles_box_edges_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/edges/time"]
       self.self_h5md_class.h5_write_particles_box_edges_time_dataset(self.self_h5md_class.particles_box_edges_time_dataset,timestep)
       try:
         self.self_h5md_class.particles_box_edges_value_dataset=self.self_h5md_class.h5_create_particles_box_edges_value_dataset(self.self_h5md_class.h5_file,groupname)
       except:
-        pass
+        self.self_h5md_class.particles_box_edges_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/edges/value"]
       self.self_h5md_class.h5_write_particles_box_edges_value_dataset(self.self_h5md_class.particles_box_edges_value_dataset,timestep)
      
   #READ CLASS   
@@ -170,6 +179,7 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/position/value dataset in h5-file available"
         sys.exit()
+      #Write positions and time in Espresso
       self.self_h5md_class.es.glob.time = self.self_h5md_class.particles_position_time_dataset[timestep]
       for i in range(self.self_h5md_class.particles_position_value_dataset.shape[1]):
         self.self_h5md_class.es.part[i].pos = self.self_h5md_class.particles_position_value_dataset[timestep,i]   
@@ -189,6 +199,7 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/image/value dataset in h5-file available"
         sys.exit()
+      #Write image and time in Espresso
       self.self_h5md_class.es.glob.time = self.self_h5md_class.particles_image_time_dataset[timestep]
       for i in range(self.self_h5md_class.particles_image_value_dataset.shape[1]):
         self.self_h5md_class.es.part[i].pos = self.self_h5md_class.particles_image_value_dataset[timestep,i]        
@@ -210,6 +221,7 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/velocity/value dataset in h5-file available"
         sys.exit()
+      #Write velocity and time in Espresso
       self.self_h5md_class.es.glob.time = self.self_h5md_class.particles_velocity_time_dataset[timestep]
       for i in range(self.self_h5md_class.particles_velocity_value_dataset.shape[1]):
         self.self_h5md_class.es.part[i].v = self.self_h5md_class.particles_velocity_value_dataset[timestep,i]      
@@ -231,6 +243,7 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/force/value dataset in h5-file available"
         sys.exit()
+      #Write force and time in Espresso
       self.self_h5md_class.es.glob.time = self.self_h5md_class.particles_force_time_dataset[timestep]
       for i in range(self.self_h5md_class.particles_force_value_dataset.shape[1]):
         self.self_h5md_class.es.part[i].f = self.self_h5md_class.particles_force_value_dataset[timestep,i]  
@@ -242,6 +255,7 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/species/value dataset in h5-file available"
         sys.exit()
+      #Write type in Espresso
       for i in range(self.self_h5md_class.particles_species_dataset.shape[0]):
         self.self_h5md_class.es.part[i].type = int(self.self_h5md_class.particles_species_dataset[i])    
             
@@ -252,6 +266,7 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/id/value dataset in h5-file available"
         sys.exit()
+      #Write ID in Espresso
       for i in range(self.self_h5md_class.particles_id_dataset.shape[0]):
         self.self_h5md_class.es.part[i].id = int(self.self_h5md_class.particles_id_dataset[i])    
          
@@ -262,6 +277,7 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/mass/value dataset in h5-file available"
         sys.exit()
+      #Write mass in Espresso
       for i in range(self.self_h5md_class.particles_mass_dataset.shape[0]):
         self.self_h5md_class.es.part[i].mass = int(self.self_h5md_class.particles_mass_dataset[i])  
          
@@ -272,13 +288,13 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/box/dimension dataset in h5-file available"
         sys.exit()
-      #TODO write dimension in espresso ?
+      #TODO
       try:
         self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_read_particles_box_boundary_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         print "Error: No particles/"+groupname+"/box/boundary dataset in h5-file available"
         sys.exit()
-      #TODO write boundary in espresso ?
+      #TODO
       
       try:
         self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_read_particles_box_edges_step_dataset(self.self_h5md_class.h5_file,groupname)
@@ -295,7 +311,13 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/box/edges/value dataset in h5-file available"
         sys.exit()
-
+      #Write velocity and time in Espresso
+      self.self_h5md_class.es.glob.time = self.self_h5md_class.particles_box_edges_time_dataset[timestep]
+      #TODO
+      self.self_h5md_class.es.glob.box_l[0] = self.self_h5md_class.particles_box_edges_value_dataset[timestep,0,0]      
+      self.self_h5md_class.es.glob.box_l[1] = self.self_h5md_class.particles_box_edges_value_dataset[timestep,1,1]      
+      self.self_h5md_class.es.glob.box_l[2] = self.self_h5md_class.particles_box_edges_value_dataset[timestep,2,2]  
+  
   ######################### PARTICLES CREATE/READ/WRITE DATASET FUNCTIONS #############################
   #Positions/value
   def h5_create_particles_position_value_dataset(self,h5_file,groupname):
@@ -557,9 +579,10 @@ class h5md(object):
   def h5_write_particles_box_edges_value_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1): 
       dataset.resize((timestep+1,3,3))
-    dataset[timestep,0]=self.es.glob.box_l[0]
-    dataset[timestep,1]=self.es.glob.box_l[1]
-    dataset[timestep,2]=self.es.glob.box_l[2]
+    #TODO
+    dataset[timestep,0,0]=self.es.glob.box_l[0]
+    dataset[timestep,1,1]=self.es.glob.box_l[1]
+    dataset[timestep,2,2]=self.es.glob.box_l[2]
       
   def h5_read_particles_box_edges_value_dataset(self,filename,groupname):
     group=filename['particles/'+groupname+'/box/edges']
@@ -594,24 +617,26 @@ class h5md(object):
     return group['step']
 
   
-  ###############################################################################################
-  ###################################### OBSERVABLES GROUP ###################################### 
-  ###############################################################################################
+  #####################################################################################################################################
+  ####################################################### OBSERVABLES GROUP ########################################################### 
+  #####################################################################################################################################
   def h5_write_observable(self,timestep,value,observablename,groupname):
     try:
       self.observables_step_dataset=self.h5_create_observable_step_dataset(self.h5_file,groupname,observablename)
     except:
-      self.observables_step_dataset=self.h5_file['observables/'+groupname+'/'+observablename+'/step'] 
+      self.observables_step_dataset=self.h5_file['observables/'+groupname+'/'+observablename+'/step']
+    self.h5_write_observable_step_dataset(self.observables_step_dataset,timestep)
+     
     try:
       self.observables_time_dataset=self.h5_create_observable_time_dataset(self.h5_file,groupname,observablename)
     except:
       self.observables_time_dataset=self.h5_file['observables/'+groupname+'/'+observablename+'/time'] 
+    self.h5_write_observable_time_dataset(self.observables_time_dataset,timestep)
+    
     try:
       self.observables_value_dataset=self.h5_create_observable_value_dataset(self.h5_file,groupname,observablename)
     except:
       self.observables_value_dataset=self.h5_file['observables/'+groupname+'/'+observablename+'/value'] 
-    self.h5_write_observable_step_dataset(self.observables_step_dataset,timestep)
-    self.h5_write_observable_time_dataset(self.observables_time_dataset,timestep)
     self.h5_write_observable_value_dataset(self.observables_value_dataset,value,timestep)
           
   def h5_read_observable(self,timestep,observablename,groupname):  
@@ -679,9 +704,9 @@ class h5md(object):
     return group['step']     
   
 
-  ##################################################################################################  
-  ###################################### VMD PARAMETERS GROUP ###################################### 
-  ##################################################################################################
+  #####################################################################################################################################  
+  ##################################################### VMD PARAMETERS GROUP ########################################################## 
+  #####################################################################################################################################
   def h5_write_vmd_parameters(self,groupname=""):
     try:
       self.parameters_vmd_atomicnumber_dataset=self.h5_create_parameters_vmd_atomicnumber_dataset(self.h5_file,groupname)
