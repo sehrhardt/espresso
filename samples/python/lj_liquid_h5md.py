@@ -213,4 +213,4 @@ print "XXXXXXXXXXXX"
 print "XXXXXXXXXXXX"
 print "XXXXXXXXXXXX",es.part[0].bonds
 print "XXXXXXXXXXXX"
-
+print es.glob.periodicity

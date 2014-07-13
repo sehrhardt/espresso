@@ -291,14 +291,26 @@ class h5md(object):
       except:
         print "Error: No particles/"+groupname+"/box/dimension dataset in h5-file available"
         sys.exit()
-      #TODO
+
       try:
         self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_read_particles_box_boundary_dataset(self.self_h5md_class.h5_file,groupname)
       except:
         print "Error: No particles/"+groupname+"/box/boundary dataset in h5-file available"
         sys.exit()
-      #TODO
-      
+        
+      if(self.self_h5md_class.particles_box_boundary_dataset[0]=="none"):
+        self.self_h5md_class.es.glob.periodicity[0]=0
+      else:
+        self.self_h5md_class.es.glob.periodicity[0]=1
+      if(self.self_h5md_class.particles_box_boundary_dataset[0]=="none"):
+        self.self_h5md_class.es.glob.periodicity[1]=0
+      else:
+        self.self_h5md_class.es.glob.periodicity[1]=1
+      if(self.self_h5md_class.particles_box_boundary_dataset[0]=="none"):
+        self.self_h5md_class.es.glob.periodicity[2]=0
+      else:
+        self.self_h5md_class.es.glob.periodicity[2]=1
+             
       try:
         self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_read_particles_box_edges_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
@@ -554,11 +566,11 @@ class h5md(object):
   
   #Box/dimension
   def h5_create_particles_box_dimension_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/dimension",(1,1), maxshape=(None,1), dtype='S10')
+    dset = h5_file.create_dataset("particles/"+groupname+"/box/dimension",(1,1), maxshape=(None,1), dtype='int64')
     return dset
         
   def h5_write_particles_box_dimension_dataset(self,dataset):
-    dataset[0]="TODO"
+    dataset[0]=3
 
   def h5_read_particles_box_dimension_dataset(self,filename,groupname):
     group=filename['particles/'+groupname+'/box']
@@ -566,11 +578,22 @@ class h5md(object):
   
   #Box/boundary
   def h5_create_particles_box_boundary_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/boundary",(1,1), maxshape=(None,1), dtype='S10')
+    dset = h5_file.create_dataset("particles/"+groupname+"/box/boundary",(3,1), maxshape=(3,1), dtype='S10')
     return dset
         
   def h5_write_particles_box_boundary_dataset(self,dataset):
-    dataset[0]="TODO"
+    if(self.es.glob.periodicity[0]==0):
+      dataset[0]="none"
+    else:
+      dataset[0]="periodic"
+    if(self.es.glob.periodicity[1]==0):
+      dataset[1]="none"
+    else:
+      dataset[1]="periodic"
+    if(self.es.glob.periodicity[2]==0):
+      dataset[2]="none"
+    else:
+      dataset[2]="periodic"
 
   def h5_read_particles_box_boundary_dataset(self,filename,groupname):
     group=filename['particles/'+groupname+'/box']
