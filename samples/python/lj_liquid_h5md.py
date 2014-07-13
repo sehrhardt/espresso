@@ -76,20 +76,21 @@ h5=h5md.h5md("lj_liquid_h5md.h5",es)
 #############################################################
 #H5MD: Read positions from h5-file and store them in Espresso
 if (h5_file_already_exists): #Check if file already exists -> Keep positions
-  h5.h5_read_particles.q(0,"A")
-  h5.h5_read_particles.image(0,"A")
-  h5.h5_read_particles.v(0,"A")
-  h5.h5_read_particles.f(0,"A")
+  lastTimestep=h5.h5_dataset_size("particles/A/position/value")[0]-1
+  h5.h5_read_particles.pos(lastTimestep,"A")
+  h5.h5_read_particles.image(lastTimestep,"A")
+  h5.h5_read_particles.v(lastTimestep,"A")
+  h5.h5_read_particles.f(lastTimestep,"A")
   h5.h5_read_particles.type("A")
   h5.h5_read_particles.mass("A")
   h5.h5_read_particles.id("A")
-  h5.h5_read_particles.box(0,"A")
-  h5.h5_read_observable(0,"energies","A")
+  h5.h5_read_particles.box(lastTimestep,"A")
+  h5.h5_read_observable(lastTimestep,"energies","A")
 else: #Random Positions
   for i in range(n_part):
     es.part[i].pos=numpy.random.random(3)*es.glob.box_l
     es.part[i].type=i%3
-  h5.h5_write_particles.q(0,"A")
+  h5.h5_write_particles.pos(0,"A")
   h5.h5_write_particles.image(0,"A")
   h5.h5_write_particles.v(0,"A")
   h5.h5_write_particles.f(0,"A")
@@ -179,7 +180,7 @@ for i in range(0,int_n_times):
   print energies
   obs_file.write('{ time %s } %s\n' % (es.glob.time,energies))
   #H5MD: Write Positions, Forces etc.
-  h5.h5_write_particles.q(i,"A")
+  h5.h5_write_particles.pos(i,"A")
   h5.h5_write_particles.image(i,"A")
   h5.h5_write_particles.v(i,"A")
   h5.h5_write_particles.f(i,"A")
@@ -204,5 +205,12 @@ es._espressoHandle.die()
 
 # terminate program
 print "\n\nFinished"
-print "XXXXXXXXXXX",es.glob.box_l[0]
-del h5md #xxx
+print "XXXXXXXXXXXX"
+print "XXXXXXXXXXXX"
+#es.interactions.FeneBond(1)
+#es.bondedInter[0].FeneBond.setParams(k=1.0, d_r_max=10.0,r_0=1.0)#xxx
+#es.part[0].bonds=[[1,2]]
+print "XXXXXXXXXXXX"
+print "XXXXXXXXXXXX",es.part[0].bonds
+print "XXXXXXXXXXXX"
+

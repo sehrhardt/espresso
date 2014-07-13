@@ -19,7 +19,7 @@
 //#define PARTIAL_PERIODIC
 //#define EXTERNAL_FORCES
 //#define CONSTRAINTS
-//#define MASS
+#define MASS
 //#define EXCLUSIONS
 //#define COMFORCE
 //#define COMFIXED

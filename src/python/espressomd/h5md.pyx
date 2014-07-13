@@ -15,6 +15,9 @@ class h5md(object):
     h5_file = h5py.File(filename,accesstype)
     return h5_file
   
+  def h5_dataset_size(self,dataset):
+    return self.h5_file[dataset].shape
+  
   #####################################################################################################################################
   ########################################################### PARTICLES GROUP ######################################################### 
   #####################################################################################################################################
@@ -24,7 +27,7 @@ class h5md(object):
       self.self_h5md_class=self_h5md_class   
        
     #Position
-    def q(self,timestep,groupname="atoms"):
+    def pos(self,timestep,groupname="atoms"):
       try:
         self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_create_particles_position_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
@@ -163,7 +166,7 @@ class h5md(object):
       self.self_h5md_class=self_h5md_class
       
     #Position
-    def q(self,timestep,groupname="atoms"):
+    def pos(self,timestep,groupname="atoms"):
       try:
         self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_read_particles_position_step_dataset(self.self_h5md_class.h5_file,groupname)
       except:
@@ -183,7 +186,7 @@ class h5md(object):
       self.self_h5md_class.es.glob.time = self.self_h5md_class.particles_position_time_dataset[timestep]
       for i in range(self.self_h5md_class.particles_position_value_dataset.shape[1]):
         self.self_h5md_class.es.part[i].pos = self.self_h5md_class.particles_position_value_dataset[timestep,i]   
-           
+        
     #Image
     def image(self,timestep,groupname="atoms"):
       try:
@@ -318,7 +321,9 @@ class h5md(object):
       self.self_h5md_class.es.glob.box_l[1] = self.self_h5md_class.particles_box_edges_value_dataset[timestep,1,1]      
       self.self_h5md_class.es.glob.box_l[2] = self.self_h5md_class.particles_box_edges_value_dataset[timestep,2,2]  
   
-  ######################### PARTICLES CREATE/READ/WRITE DATASET FUNCTIONS #############################
+  
+  ########################################### PARTICLES CREATE/READ/WRITE DATASET FUNCTIONS ##########################################
+  
   #Positions/value
   def h5_create_particles_position_value_dataset(self,h5_file,groupname):
     dset = h5_file.create_dataset("particles/"+groupname+"/position/value",(1,1,3), maxshape=(None,None,3), dtype='f8')
@@ -656,7 +661,9 @@ class h5md(object):
       print "Error: No observables/"+groupname+"/"+observablename+"/value dataset in h5-file available"
       sys.exit()    
   
-  #OBSERVABLES CREATE/READ/WRITE DATASET FUNCTIONS 
+  
+  ########################################### OBSERVABLES CREATE/READ/WRITE DATASET FUNCTIONS ##########################################
+  
   #Observable/value
   def h5_create_observable_value_dataset(self,h5_file,groupname,observablename):
     dset = h5_file.create_dataset("observables/"+groupname+"/"+observablename+"/value",(1,1), maxshape=(None,None), dtype='f8')
@@ -708,6 +715,7 @@ class h5md(object):
   ##################################################### VMD PARAMETERS GROUP ########################################################## 
   #####################################################################################################################################
   def h5_write_vmd_parameters(self,groupname=""):
+    #indexOfSpecies and atomicnumber
     try:
       self.parameters_vmd_atomicnumber_dataset=self.h5_create_parameters_vmd_atomicnumber_dataset(self.h5_file,groupname)
     except:
@@ -717,7 +725,7 @@ class h5md(object):
     except:
       self.parameters_vmd_indexOfSpecies_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/indexOfSpecies']   
       
-    #Determine number of species
+    #Determine number of species/atomicnumber
     number_of_species=0
     n_part=self.es.glob.n_part
     for i in range(0,n_part): 
@@ -726,12 +734,29 @@ class h5md(object):
     #Resize dataset
     self.parameters_vmd_atomicnumber_dataset.resize((number_of_species+1,1))
     self.parameters_vmd_indexOfSpecies_dataset.resize((number_of_species+1,1))
-    #Assign values to atomicnumber and indexOfSpecies
+    #Assign values to indexOfSpecies/atomicnumber 
     species_array=np.zeros(number_of_species)
     for i in range(0,number_of_species):
       species_array[i]=i
     self.h5_write_parameters_vmd_atomicnumber_dataset(self.parameters_vmd_atomicnumber_dataset,species_array)
     self.h5_write_parameters_vmd_indexOfSpecies_dataset(self.parameters_vmd_indexOfSpecies_dataset,species_array)
+    
+    
+    #Bond_from and bond_to
+    try:
+      self.parameters_vmd_bond_from_dataset=self.h5_create_parameters_vmd_bond_from_dataset(self.h5_file,groupname)
+    except:
+      self.parameters_vmd_bond_from_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/bond_from'] 
+    try:
+      self.parameters_vmd_bond_to_dataset=self.h5_create_parameters_vmd_bond_to_dataset(self.h5_file,groupname)
+    except:
+      self.parameters_vmd_bond_to_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/bond_to'] 
+    
+    for i in range(0,n_part): 
+      for j in range(0,len(self.es.part[i].bonds)):
+        self.h5_write_parameters_vmd_bond_from_dataset(self.particles_position_value_dataset,i) 
+        self.h5_write_parameters_vmd_bond_from_dataset(self.particles_position_value_dataset,self.es.part[i].bonds[j,1])
+                        
   
   def h5_read_vmd_parameters(self,groupname=""):  
     try:
@@ -745,7 +770,9 @@ class h5md(object):
       print "Error: No parameters/"+groupname+"/vmd_structure/indexOfSpecies dataset in h5-file available"
       sys.exit()        
        
-  #VMD CREATE/READ/WRITE DATASET FUNCTIONS 
+       
+  ############################################# VMD CREATE/READ/WRITE DATASET FUNCTIONS ############################################
+  
   #IndexOfSpecies    
   def h5_create_parameters_vmd_indexOfSpecies_dataset(self,h5_file,groupname):
     dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/indexOfSpecies",(1,1), maxshape=(None,1), dtype='int64')
@@ -781,11 +808,9 @@ class h5md(object):
     dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/bond_from",(1,1), maxshape=(None,1), dtype='int64')
     return dset
         
-  def h5_write_parameters_vmd_bond_from_dataset(self,dataset,array):
-    if(dataset.len()<=len(array)+1):
-      dataset.resize((len(array),1))
-    for i in range(0,len(array)):
-      dataset[i]=array[i]
+  def h5_write_parameters_vmd_bond_from_dataset(self,dataset,value):
+    dataset.resize((dataset.len()+1,1))
+    dataset[dataset.len()+1]=value
 
   def h5_read_parameters_vmd_bond_from_dataset(self,filename,groupname):
     group=filename['parameters/'+groupname+'/vmd_structure']
@@ -796,11 +821,9 @@ class h5md(object):
     dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/bond_to",(1,1), maxshape=(None,1), dtype='int64')
     return dset
         
-  def h5_write_parameters_vmd_bond_to_dataset(self,dataset,array):
-    if(dataset.len()<=len(array)+1):
-      dataset.resize((len(array),1))
-    for i in range(0,len(array)):
-      dataset[i]=array[i]  
+  def h5_write_parameters_vmd_bond_to_dataset(self,dataset,value):
+    dataset.resize((dataset.len()+1,1))
+    dataset[dataset.len()+1]=value 
       
   def h5_read_parameters_vmd_bond_to_dataset(self,filename,groupname):
     group=filename['parameters/'+groupname+'/vmd_structure']
