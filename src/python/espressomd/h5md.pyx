@@ -10,6 +10,8 @@ class h5md(object):
     self.h5_file=self.h5_open_file(h5_filename,"a")
     self.h5_write_particles=self.h5_write_particles(self)
     self.h5_read_particles=self.h5_read_particles(self)
+    self.h5_write_vmd_parameters_extra=self.h5_write_vmd_parameters_extra(self)
+    self.h5_read_vmd_parameters_extra=self.h5_read_vmd_parameters_extra(self)
     
   def h5_open_file(self,filename,accesstype):
     h5_file = h5py.File(filename,accesstype)
@@ -18,6 +20,11 @@ class h5md(object):
   def h5_dataset_size(self,dataset):
     return self.h5_file[dataset].shape
   
+  def h5_write_attributes(self,dataset,name,value):
+    self.h5_file[dataset].attrs[name] = value
+  
+  def h5_read_attributes(self,dataset,name):
+    return self.h5_file[dataset].attrs[name]
   #####################################################################################################################################
   ########################################################### PARTICLES GROUP ######################################################### 
   #####################################################################################################################################
@@ -578,7 +585,7 @@ class h5md(object):
   
   #Box/boundary
   def h5_create_particles_box_boundary_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/boundary",(3,1), maxshape=(3,1), dtype='S10')
+    dset = h5_file.create_dataset("particles/"+groupname+"/box/boundary",(3,1), maxshape=(3,1), dtype='S30')
     return dset
         
   def h5_write_particles_box_boundary_dataset(self,dataset):
@@ -791,26 +798,105 @@ class h5md(object):
       self.parameters_vmd_indexOfSpecies_dataset=self.h5_read_parameters_vmd_indexOfSpecies_dataset(self.h5_file,groupname)
     except:
       print "Error: No parameters/"+groupname+"/vmd_structure/indexOfSpecies dataset in h5-file available"
-      sys.exit()        
+      sys.exit() 
+      #TODO read bond_from       
+
+  class h5_write_vmd_parameters_extra(object):
+    def __init__(self,self_h5md_class):
+      self.self_h5md_class=self_h5md_class         
+    #Chain
+    def chain(self,array,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_create_parameters_vmd_chain_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/chain']    
+      self.self_h5md_class.h5_write_parameters_vmd_chain_dataset(self.self_h5md_class.parameters_vmd_chain_dataset,array)  
+    #Name
+    def name(self,array,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_create_parameters_vmd_name_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/name']    
+      self.self_h5md_class.h5_write_parameters_vmd_name_dataset(self.self_h5md_class.parameters_vmd_name_dataset,array)
+    #Resid
+    def resid(self,array,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_create_parameters_vmd_resid_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/resid']    
+      self.self_h5md_class.h5_write_parameters_vmd_resid_dataset(self.self_h5md_class.parameters_vmd_resid_dataset,array)
+    #Resname
+    def resname(self,array,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_create_parameters_vmd_resname_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/resname']    
+      self.self_h5md_class.h5_write_parameters_vmd_resname_dataset(self.self_h5md_class.parameters_vmd_resname_dataset,array)
+    #Segid
+    def segid(self,array,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_create_parameters_vmd_segid_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/segid']    
+      self.self_h5md_class.h5_write_parameters_vmd_segid_dataset(self.self_h5md_class.parameters_vmd_segid_dataset,array)  
+    #Type
+    def type(self,array,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_create_parameters_vmd_type_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/type']    
+      self.self_h5md_class.h5_write_parameters_vmd_type_dataset(self.self_h5md_class.parameters_vmd_type_dataset,array) 
+                        
+                    
+  class h5_read_vmd_parameters_extra(object):
+    def __init__(self,self_h5md_class):
+      self.self_h5md_class=self_h5md_class    
+    #Chain  
+    def chain(self,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_read_parameters_vmd_chain_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        print "Error: No parameters/"+groupname+"/vmd_structure/chain dataset in h5-file available"
+        sys.exit()
+    #Name  
+    def name(self,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_read_parameters_vmd_name_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        print "Error: No parameters/"+groupname+"/vmd_structure/name dataset in h5-file available"
+        sys.exit()  
+    #Resid  
+    def resid(self,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_read_parameters_vmd_resid_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        print "Error: No parameters/"+groupname+"/vmd_structure/resid dataset in h5-file available"
+        sys.exit() 
+    #Resname  
+    def resname(self,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_read_parameters_vmd_resname_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        print "Error: No parameters/"+groupname+"/vmd_structure/resname dataset in h5-file available"
+        sys.exit()
+    #Segid  
+    def segid(self,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_read_parameters_vmd_segid_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        print "Error: No parameters/"+groupname+"/vmd_structure/segid dataset in h5-file available"
+        sys.exit()
+    #Type  
+    def type(self,groupname=""):
+      try:
+        self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_read_parameters_vmd_type_dataset(self.self_h5md_class.h5_file,groupname)
+      except:
+        print "Error: No parameters/"+groupname+"/vmd_structure/type dataset in h5-file available"
+        sys.exit() 
        
        
   ############################################# VMD CREATE/READ/WRITE DATASET FUNCTIONS ############################################
-  
-  #IndexOfSpecies    
-  def h5_create_parameters_vmd_indexOfSpecies_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/indexOfSpecies",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
-  def h5_write_parameters_vmd_indexOfSpecies_dataset(self,dataset,array):
-    if(dataset.len()<=len(array)+1):
-      dataset.resize((len(array),1))
-    for i in range(0,len(array)):
-      dataset[i]=array[i]
-      
-  def h5_read_parameters_vmd_indexOfSpecies_dataset(self,filename,groupname):
-    group=filename['parameters/'+groupname+'/vmd_structure']
-    return group['indexOfSpecies']
-  
+    
   #Atomic number
   def h5_create_parameters_vmd_atomicnumber_dataset(self,h5_file,groupname):
     dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/atomicnumber",(1,1), maxshape=(None,1), dtype='int64')
@@ -821,7 +907,7 @@ class h5md(object):
       dataset.resize((len(array),1))
     for i in range(0,len(array)):
       dataset[i]=array[i]
-
+    
   def h5_read_parameters_vmd_atomicnumber_dataset(self,filename,groupname):
     group=filename['parameters/'+groupname+'/vmd_structure']
     return group['atomicnumber']
@@ -854,7 +940,7 @@ class h5md(object):
         
   #Chain
   def h5_create_parameters_vmd_chain_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/chain",(1,1), maxshape=(None,1), dtype='S10')
+    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/chain",(1,1), maxshape=(None,1), dtype='S30')
     return dset
         
   def h5_write_parameters_vmd_chain_dataset(self,dataset,array):
@@ -866,6 +952,21 @@ class h5md(object):
   def h5_read_parameters_vmd_chain_dataset(self,filename,groupname):
     group=filename['parameters/'+groupname+'/vmd_structure']
     return group['chain']    
+  
+  #IndexOfSpecies    
+  def h5_create_parameters_vmd_indexOfSpecies_dataset(self,h5_file,groupname):
+    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/indexOfSpecies",(1,1), maxshape=(None,1), dtype='int64')
+    return dset
+        
+  def h5_write_parameters_vmd_indexOfSpecies_dataset(self,dataset,array):
+    if(dataset.len()<=len(array)+1):
+      dataset.resize((len(array),1))
+    for i in range(0,len(array)):
+      dataset[i]=array[i]
+      
+  def h5_read_parameters_vmd_indexOfSpecies_dataset(self,filename,groupname):
+    group=filename['parameters/'+groupname+'/vmd_structure']
+    return group['indexOfSpecies']
       
   #Charge
   def h5_create_parameters_vmd_charge_dataset(self,h5_file,groupname):
@@ -899,7 +1000,7 @@ class h5md(object):
       
   #Name
   def h5_create_parameters_vmd_name_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/name",(1,1), maxshape=(None,1), dtype='S10')
+    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/name",(1,1), maxshape=(None,1), dtype='S30')
     return dset
         
   def h5_write_parameters_vmd_name_dataset(self,dataset,array):
@@ -910,22 +1011,7 @@ class h5md(object):
       
   def h5_read_parameters_vmd_name_dataset(self,filename,groupname):
     group=filename['parameters/'+groupname+'/vmd_structure']
-    return group['name']    
-      
-  #Number segid    
-  def h5_create_parameters_vmd_indexOfSegid_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/indexOfSegid",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
-  def h5_write_parameters_vmd_indexOfSegid_dataset(self,dataset,es,array):
-    if(dataset.len()<=len(array)+1):
-      dataset.resize((len(array),1))
-    for i in range(0,len(array)):
-      dataset[i]=array[i]      
-      
-  def h5_read_parameters_vmd_indexOfSegid_dataset(self,filename,groupname):
-    group=filename['parameters/'+groupname+'/vmd_structure']
-    return group['indexOfSegid']    
+    return group['name']     
       
   #Radius
   def h5_create_parameters_vmd_radius_dataset(self,h5_file,groupname):
@@ -959,7 +1045,7 @@ class h5md(object):
 
   #Resname
   def h5_create_parameters_vmd_resname_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/resname",(1,1), maxshape=(None,1), dtype='S10')
+    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/resname",(1,1), maxshape=(None,1), dtype='S30')
     return dset
         
   def h5_write_parameters_vmd_resname_dataset(self,dataset,array):
@@ -974,7 +1060,7 @@ class h5md(object):
 
   #Segid    
   def h5_create_parameters_vmd_segid_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/segid",(1,1), maxshape=(None,1), dtype='S10')
+    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/segid",(1,1), maxshape=(None,1), dtype='S30')
     return dset
         
   def h5_write_parameters_vmd_segid_dataset(self,dataset,array):
@@ -989,7 +1075,7 @@ class h5md(object):
         
   #Type
   def h5_create_parameters_vmd_type_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/type",(1,1), maxshape=(None,1), dtype='S10')
+    dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/type",(1,1), maxshape=(None,1), dtype='S30')
     return dset
         
   def h5_write_parameters_vmd_type_dataset(self,dataset,array):

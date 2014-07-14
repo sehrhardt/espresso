@@ -190,6 +190,28 @@ for i in range(0,int_n_times):
 h5.h5_write_vmd_parameters("A")
 h5.h5_read_vmd_parameters("A")#xxxxxxxxxxxxxxxx
 
+h5.h5_write_vmd_parameters_extra.chain(["A", "B", "C"],"A")
+h5.h5_read_vmd_parameters_extra.chain("A")#xxxxxxxxxxxxxxxx
+
+h5.h5_write_vmd_parameters_extra.name(["A", "B", "C"],"A")
+h5.h5_read_vmd_parameters_extra.name("A")#xxxxxxxxxxxxxxxx
+
+h5.h5_write_vmd_parameters_extra.resid([1,2,3,4,5],"A")
+h5.h5_read_vmd_parameters_extra.resid("A")#xxxxxxxxxxxxxxxx
+
+h5.h5_write_vmd_parameters_extra.resname(["A", "B", "C"],"A")
+h5.h5_read_vmd_parameters_extra.resname("A")#xxxxxxxxxxxxxxxx
+
+h5.h5_write_vmd_parameters_extra.segid(["A", "B", "C"],"A")
+h5.h5_read_vmd_parameters_extra.segid("A")#xxxxxxxxxxxxxxxx
+
+h5.h5_write_vmd_parameters_extra.type(["A", "B", "C"],"A")
+h5.h5_read_vmd_parameters_extra.type("A")#xxxxxxxxxxxxxxxx
+
+h5.h5_write_attributes("particles/A/position/value","Name","Value")
+print h5.h5_read_attributes("particles/A/position/value","Name")
+
+
 # write end configuration
 end_file = open("pylj_liquid.end", "w")
 end_file.write("{ time %f } \n { box_l %f }\n" % (es.glob.time, box_l) )
