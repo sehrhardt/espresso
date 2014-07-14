@@ -25,6 +25,27 @@ class h5md(object):
   
   def h5_read_attributes(self,dataset,name):
     return self.h5_file[dataset].attrs[name]
+  
+  def h5_create_dataset(self,h5_file,dataset,shape,Maxshape,Dtype):
+    #dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/charge",(1,1), maxshape=(None,1), dtype='f8')#xxxx
+    dset = h5_file.create_dataset(dataset,shape, maxshape=Maxshape, dtype=Dtype)
+    return dset
+  
+  def h5_read_dataset(self,h5_file,dataset_group,dataset_name):
+    #group=h5_file['particles/'+groupname+'/position']#xxxxxxxxxxx
+    group=h5_file[dataset_group]
+    return group[dataset_name]
+        
+  def h5_write_parameters_vmd_charge_dataset(self,dataset,array):
+    if(dataset.len()<=len(array)+1):
+      dataset.resize((len(array),1))
+    for i in range(0,len(array)):
+      dataset[i]=array[i]    
+
+  def h5_read_parameters_vmd_charge_dataset(self,filename,groupname):
+    group=filename['parameters/'+groupname+'/vmd_structure']
+    return group['charge']   
+  
   #####################################################################################################################################
   ########################################################### PARTICLES GROUP ######################################################### 
   #####################################################################################################################################
@@ -36,19 +57,19 @@ class h5md(object):
     #Position
     def pos(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_create_particles_position_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/position/step",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/step"]    
       self.self_h5md_class.h5_write_particles_position_step_dataset(self.self_h5md_class.particles_position_step_dataset,timestep)  
         
       try:
-        self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_create_particles_position_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/position/time",(1,1),(None,1),'f8')
       except:
         self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/time"] 
       self.self_h5md_class.h5_write_particles_position_time_dataset(self.self_h5md_class.particles_position_time_dataset,timestep)  
             
       try:
-        self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_create_particles_position_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/position/value",(1,1,3),(None,None,3),'f8')
       except:
         self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/position/value"]              
       self.self_h5md_class.h5_write_particles_position_value_dataset(self.self_h5md_class.particles_position_value_dataset,timestep)
@@ -56,19 +77,19 @@ class h5md(object):
     #Image
     def image(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_image_step_dataset=self.self_h5md_class.h5_create_particles_image_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_image_step_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/image/step",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_image_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/image/step"]    
       self.self_h5md_class.h5_write_particles_image_step_dataset(self.self_h5md_class.particles_image_step_dataset,timestep)  
         
       try:
-        self.self_h5md_class.particles_image_time_dataset=self.self_h5md_class.h5_create_particles_image_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_image_time_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/image/time",(1,1),(None,1),'f8')
       except:
         self.self_h5md_class.particles_image_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/image/time"]  
       self.self_h5md_class.h5_write_particles_image_time_dataset(self.self_h5md_class.particles_image_time_dataset,timestep) 
         
       try:
-        self.self_h5md_class.particles_image_value_dataset=self.self_h5md_class.h5_create_particles_image_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_image_value_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/image/value",(1,1,3),(None,None,3),'f8')
       except:
         self.self_h5md_class.particles_image_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/image/value"]      
       self.self_h5md_class.h5_write_particles_image_value_dataset(self.self_h5md_class.particles_image_value_dataset,timestep)   
@@ -76,19 +97,19 @@ class h5md(object):
     #Velocity
     def v(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_velocity_step_dataset=self.self_h5md_class.h5_create_particles_velocity_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_velocity_step_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/velocity/step",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_velocity_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/velocity/step"] 
       self.self_h5md_class.h5_write_particles_velocity_step_dataset(self.self_h5md_class.particles_velocity_step_dataset,timestep)  
         
       try:
-        self.self_h5md_class.particles_velocity_time_dataset=self.self_h5md_class.h5_create_particles_velocity_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_velocity_time_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/velocity/time",(1,1),(None,1),'f8')
       except:
         self.self_h5md_class.particles_velocity_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/velocity/time"]  
       self.self_h5md_class.h5_write_particles_velocity_time_dataset(self.self_h5md_class.particles_velocity_time_dataset,timestep)  
         
       try:
-        self.self_h5md_class.particles_velocity_value_dataset=self.self_h5md_class.h5_create_particles_velocity_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_velocity_value_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/velocity/value",(1,1,3),(None,None,3),'f8')
       except:
         self.self_h5md_class.particles_velocity_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/velocity/value"]          
       self.self_h5md_class.h5_write_particles_velocity_value_dataset(self.self_h5md_class.particles_velocity_value_dataset,timestep) 
@@ -96,19 +117,19 @@ class h5md(object):
     #Force
     def f(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_create_particles_force_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/force/step",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/step"] 
       self.self_h5md_class.h5_write_particles_force_step_dataset(self.self_h5md_class.particles_force_step_dataset,timestep) 
              
       try:
-        self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_create_particles_force_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/force/time",(1,1),(None,1),'f8')
       except:
         self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/time"]  
       self.self_h5md_class.h5_write_particles_force_time_dataset(self.self_h5md_class.particles_force_time_dataset,timestep)  
           
       try:
-        self.self_h5md_class.particles_force_value_dataset=self.self_h5md_class.h5_create_particles_force_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_force_value_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/force/value",(1,1,3),(None,None,3),'f8')
       except:
         self.self_h5md_class.particles_force_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/force/value"]     
       self.self_h5md_class.h5_write_particles_force_value_dataset(self.self_h5md_class.particles_force_value_dataset,timestep)      
@@ -116,7 +137,7 @@ class h5md(object):
     #Species
     def type(self,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_species_dataset=self.self_h5md_class.h5_create_particles_species_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_species_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/species/value",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_species_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/species/value"]   
       self.self_h5md_class.h5_write_particles_species_dataset(self.self_h5md_class.particles_species_dataset)  
@@ -124,7 +145,7 @@ class h5md(object):
     #ID
     def id(self,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_id_dataset=self.self_h5md_class.h5_create_particles_id_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_id_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/id/value",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_id_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/id/value"]
       self.self_h5md_class.h5_write_particles_id_dataset(self.self_h5md_class.particles_id_dataset) 
@@ -132,7 +153,7 @@ class h5md(object):
     #Mass
     def mass(self,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_mass_dataset=self.self_h5md_class.h5_create_particles_mass_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_mass_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/mass/value",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_mass_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/mass/value"]
       self.self_h5md_class.h5_write_particles_mass_dataset(self.self_h5md_class.particles_mass_dataset)   
@@ -140,29 +161,29 @@ class h5md(object):
     #Box
     def box(self,timestep=0,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_box_dimension_dataset=self.self_h5md_class.h5_create_particles_box_dimension_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_dimension_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/box/dimension",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_box_dimension_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/dimension"]
       self.self_h5md_class.h5_write_particles_box_dimension_dataset(self.self_h5md_class.particles_box_dimension_dataset)  
          
       try:
-        self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_create_particles_box_boundary_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/box/boundary",(3,1),(3,1),'S30')
       except:
         self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/boundary"]
       self.self_h5md_class.h5_write_particles_box_boundary_dataset(self.self_h5md_class.particles_box_boundary_dataset) 
       
       try:
-        self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_create_particles_box_edges_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/box/edges/step",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/edges/step"]
       self.self_h5md_class.h5_write_particles_box_edges_step_dataset(self.self_h5md_class.particles_box_edges_step_dataset,timestep) 
       try:
-        self.self_h5md_class.particles_box_edges_time_dataset=self.self_h5md_class.h5_create_particles_box_edges_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_edges_time_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/box/edges/time",(1,1),(None,1),'f8')
       except:
         self.self_h5md_class.particles_box_edges_time_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/edges/time"]
       self.self_h5md_class.h5_write_particles_box_edges_time_dataset(self.self_h5md_class.particles_box_edges_time_dataset,timestep)
       try:
-        self.self_h5md_class.particles_box_edges_value_dataset=self.self_h5md_class.h5_create_particles_box_edges_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_edges_value_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"particles/"+groupname+"/box/edges/value",(1,3,3),(None,None,3),'f8')
       except:
         self.self_h5md_class.particles_box_edges_value_dataset=self.self_h5md_class.h5_file["particles/"+groupname+"/box/edges/value"]
       self.self_h5md_class.h5_write_particles_box_edges_value_dataset(self.self_h5md_class.particles_box_edges_value_dataset,timestep)
@@ -175,17 +196,17 @@ class h5md(object):
     #Position
     def pos(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_read_particles_position_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_position_step_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/position','step')
       except:
         print "Error: No particles/"+groupname+"/position/step dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_read_particles_position_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_position_time_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/position','time')
       except:
         print "Error: No particles/"+groupname+"/position/time dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_read_particles_position_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_position_value_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/position','value')
       except:
         print "Error: No particles/"+groupname+"/position/value dataset in h5-file available"
         sys.exit()
@@ -197,15 +218,15 @@ class h5md(object):
     #Image
     def image(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_image_step_dataset=self.self_h5md_class.h5_read_particles_image_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_image_step_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/image','step')
       except:
         print "Error: No particles/"+groupname+"/image/step dataset in h5-file available"
       try:
-        self.self_h5md_class.particles_image_time_dataset=self.self_h5md_class.h5_read_particles_image_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_image_time_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/image','time')
       except:
         print "Error: No particles/"+groupname+"/image/time dataset in h5-file available"
       try:
-        self.self_h5md_class.particles_image_value_dataset=self.self_h5md_class.h5_read_particles_image_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_image_value_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/image','value')
       except:
         print "Error: No particles/"+groupname+"/image/value dataset in h5-file available"
         sys.exit()
@@ -217,17 +238,17 @@ class h5md(object):
     #Velocity
     def v(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_velocity_step_dataset=self.self_h5md_class.h5_read_particles_velocity_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_velocity_step_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/velocity','step')
       except:
         print "Error: No particles/"+groupname+"/velocity/step dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_velocity_time_dataset=self.self_h5md_class.h5_read_particles_velocity_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_velocity_time_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/velocity','time')
       except:
         print "Error: No particles/"+groupname+"/velocity/time dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_velocity_value_dataset=self.self_h5md_class.h5_read_particles_velocity_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_velocity_value_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/velocity','value')
       except:
         print "Error: No particles/"+groupname+"/velocity/value dataset in h5-file available"
         sys.exit()
@@ -239,17 +260,17 @@ class h5md(object):
     #Force
     def f(self,timestep,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_read_particles_force_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_force_step_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/force','step')
       except:
         print "Error: No particles/"+groupname+"/force/step dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_read_particles_force_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_force_time_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/force','time')
       except:
         print "Error: No particles/"+groupname+"/force/time dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_force_value_dataset=self.self_h5md_class.h5_read_particles_force_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_force_value_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/force','value')
       except:
         print "Error: No particles/"+groupname+"/force/value dataset in h5-file available"
         sys.exit()
@@ -261,7 +282,7 @@ class h5md(object):
     #Species
     def type(self,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_species_dataset=self.self_h5md_class.h5_read_particles_species_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_species_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/species','value')
       except:
         print "Error: No particles/"+groupname+"/species/value dataset in h5-file available"
         sys.exit()
@@ -272,7 +293,7 @@ class h5md(object):
     #ID
     def id(self,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_id_dataset=self.self_h5md_class.h5_read_particles_id_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_id_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/id','value')
       except:
         print "Error: No particles/"+groupname+"/id/value dataset in h5-file available"
         sys.exit()
@@ -283,7 +304,7 @@ class h5md(object):
     #Mass
     def mass(self,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_mass_dataset=self.self_h5md_class.h5_read_particles_mass_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_mass_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/mass','value')
       except:
         print "Error: No particles/"+groupname+"/mass/value dataset in h5-file available"
         sys.exit()
@@ -294,13 +315,13 @@ class h5md(object):
     #Box
     def box(self,timestep=0,groupname="atoms"):
       try:
-        self.self_h5md_class.particles_box_dimension_dataset=self.self_h5md_class.h5_read_particles_box_dimension_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_dimension_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/box','dimension')
       except:
         print "Error: No particles/"+groupname+"/box/dimension dataset in h5-file available"
         sys.exit()
 
       try:
-        self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_read_particles_box_boundary_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_boundary_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/box','boundary')
       except:
         print "Error: No particles/"+groupname+"/box/boundary dataset in h5-file available"
         sys.exit()
@@ -319,17 +340,17 @@ class h5md(object):
         self.self_h5md_class.es.glob.periodicity[2]=1
              
       try:
-        self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_read_particles_box_edges_step_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_edges_step_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/box/edges','step')
       except:
         print "Error: No particles/"+groupname+"/box/edges/step dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_box_edges_time_dataset=self.self_h5md_class.h5_read_particles_box_edges_time_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_edges_time_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/box/edges','time')
       except:
         print "Error: No particles/"+groupname+"/box/edges/time dataset in h5-file available"
         sys.exit()
       try:
-        self.self_h5md_class.particles_box_edges_value_dataset=self.self_h5md_class.h5_read_particles_box_edges_value_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.particles_box_edges_value_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'particles/'+groupname+'/box/edges','value')
       except:
         print "Error: No particles/"+groupname+"/box/edges/value dataset in h5-file available"
         sys.exit()
@@ -341,189 +362,88 @@ class h5md(object):
       self.self_h5md_class.es.glob.box_l[2] = self.self_h5md_class.particles_box_edges_value_dataset[timestep,2,2]  
   
   
-  ########################################### PARTICLES CREATE/READ/WRITE DATASET FUNCTIONS ##########################################
-  
+  ################################################### PARTICLES WRITE DATASET FUNCTIONS ##################################################
   #Positions/value
-  def h5_create_particles_position_value_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/position/value",(1,1,3), maxshape=(None,None,3), dtype='f8')
-    return dset
-        
   def h5_write_particles_position_value_dataset(self,dataset,timestep):
     n_part=self.es.glob.n_part
     if(dataset.len()<=timestep+1): 
       dataset.resize((timestep+1,n_part,3))
     for i in range(0,n_part):
       dataset[timestep,i]=self.es.part[i].pos
-      
-  def h5_read_particles_position_value_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/position']
-    return group['value']
 
-  #Positions/time   
-  def h5_create_particles_position_time_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/position/time",(1,1), maxshape=(None,1), dtype='f8')
-    return dset
-        
+  #Positions/time      
   def h5_write_particles_position_time_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=self.es.glob.time
 
-  def h5_read_particles_position_time_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/position']
-    return group['time']    
-      
   #Positions/step
-  def h5_create_particles_position_step_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/position/step",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
   def h5_write_particles_position_step_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=timestep
-      
-  def h5_read_particles_position_step_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/position']
-    return group['step']
-  
+
   #Image/value
-  def h5_create_particles_image_value_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/image/value",(1,1,3), maxshape=(None,None,3), dtype='f8')
-    return dset
-        
   def h5_write_particles_image_value_dataset(self,dataset,timestep):
     n_part=self.es.glob.n_part
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,n_part,3))
     for i in range(0,n_part):
       dataset[timestep,i]=self.es.part[i].pos
-      
-  def h5_read_particles_image_value_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/image']
-    return group['value']
 
   #Image/time  
-  def h5_create_particles_image_time_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/image/time",(1,1), maxshape=(None,1), dtype='f8')
-    return dset
-        
   def h5_write_particles_image_time_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=self.es.glob.time
 
-  def h5_read_particles_image_time_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/image']
-    return group['time']    
-      
   #Image/step 
-  def h5_create_particles_image_step_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/image/step",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
   def h5_write_particles_image_step_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=timestep
-      
-  def h5_read_particles_image_step_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/image']
-    return group['step']
-                
+
   #Velocity/value
-  def h5_create_particles_velocity_value_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/velocity/value",(1,1,3), maxshape=(None,None,3), dtype='f8')
-    return dset
-        
   def h5_write_particles_velocity_value_dataset(self,dataset,timestep):
     n_part=self.es.glob.n_part
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,n_part,3))
     for i in range(0,n_part):
       dataset[timestep,i]=self.es.part[i].v
-      
-  def h5_read_particles_velocity_value_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/velocity']
-    return group['value']
-        
+
   #Velocity/time  
-  def h5_create_particles_velocity_time_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/velocity/time",(1,1), maxshape=(None,1), dtype='f8')
-    return dset
-        
   def h5_write_particles_velocity_time_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=self.es.glob.time
-
-  def h5_read_particles_velocity_time_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/velocity']
-    return group['time']    
-           
+ 
   #Velocity/step
-  def h5_create_particles_velocity_step_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/velocity/step",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
   def h5_write_particles_velocity_step_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=timestep
 
-  def h5_read_particles_velocity_step_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/velocity']
-    return group['step']    
-
-  #Force/value
-  def h5_create_particles_force_value_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/force/value",(1,1,3), maxshape=(None,None,3), dtype='f8')
-    return dset
-        
+  #Force/value  
   def h5_write_particles_force_value_dataset(self,dataset,timestep):
     n_part=self.es.glob.n_part
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,n_part,3))
     for i in range(0,n_part):
       dataset[timestep,i]=self.es.part[i].f
-      
-  def h5_read_particles_force_value_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/force']
-    return group['value']
-        
+
   #Force/time   
-  def h5_create_particles_force_time_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/force/time",(1,1), maxshape=(None,1), dtype='f8')
-    return dset
-        
   def h5_write_particles_force_time_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=self.es.glob.time
 
-  def h5_read_particles_force_time_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/force']
-    return group['time']    
-      
   #Force/step
-  def h5_create_particles_force_step_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/force/step",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
   def h5_write_particles_force_step_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=timestep
-
-  def h5_read_particles_force_step_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/force']
-    return group['step']  
-                
-  #Species    
-  def h5_create_particles_species_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/species/value",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
+            
+  #Species      
   def h5_write_particles_species_dataset(self,dataset):
     n_part=self.es.glob.n_part
     if(dataset.len()<=n_part+1):
@@ -531,15 +451,7 @@ class h5md(object):
     for i in range(0,n_part):
       dataset[i]=self.es.part[i].type
 
-  def h5_read_particles_species_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/species']
-    return group['value']
-
   #ID    
-  def h5_create_particles_id_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/id/value",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
   def h5_write_particles_id_dataset(self,dataset):
     n_part=self.es.glob.n_part
     if(dataset.len()<=n_part+1):
@@ -547,15 +459,7 @@ class h5md(object):
     for i in range(0,n_part):
       dataset[i]=self.es.part[i].id
 
-  def h5_read_particles_id_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/id']
-    return group['value']
-
   #Mass    
-  def h5_create_particles_mass_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/mass/value",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
   def h5_write_particles_mass_dataset(self,dataset):
     n_part=self.es.glob.n_part
     if(dataset.len()<=n_part+1):
@@ -566,28 +470,12 @@ class h5md(object):
     ELSE: 
       print "ERROR: Feature MASS not activated"
       sys.exit()
-      
-  def h5_read_particles_mass_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/mass']
-    return group['value']  
-  
+
   #Box/dimension
-  def h5_create_particles_box_dimension_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/dimension",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
   def h5_write_particles_box_dimension_dataset(self,dataset):
     dataset[0]=3
 
-  def h5_read_particles_box_dimension_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/box']
-    return group['dimension']    
-  
-  #Box/boundary
-  def h5_create_particles_box_boundary_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/boundary",(3,1), maxshape=(3,1), dtype='S30')
-    return dset
-        
+  #Box/boundary 
   def h5_write_particles_box_boundary_dataset(self,dataset):
     if(self.es.glob.periodicity[0]==0):
       dataset[0]="none"
@@ -602,15 +490,7 @@ class h5md(object):
     else:
       dataset[2]="periodic"
 
-  def h5_read_particles_box_boundary_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/box']
-    return group['boundary']  
-  
   #Box/edges/value
-  def h5_create_particles_box_edges_value_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/edges/value",(1,3,3), maxshape=(None,None,3), dtype='f8')
-    return dset
-        
   def h5_write_particles_box_edges_value_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1): 
       dataset.resize((timestep+1,3,3))
@@ -618,38 +498,18 @@ class h5md(object):
     dataset[timestep,0,0]=self.es.glob.box_l[0]
     dataset[timestep,1,1]=self.es.glob.box_l[1]
     dataset[timestep,2,2]=self.es.glob.box_l[2]
-      
-  def h5_read_particles_box_edges_value_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/box/edges']
-    return group['value']
 
   #Box/edges/time   
-  def h5_create_particles_box_edges_time_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/edges/time",(1,1), maxshape=(None,1), dtype='f8')
-    return dset
-        
   def h5_write_particles_box_edges_time_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=self.es.glob.time
 
-  def h5_read_particles_box_edges_time_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/box/edges']
-    return group['time']    
-      
-  #Box/edges/step
-  def h5_create_particles_box_edges_step_dataset(self,h5_file,groupname):
-    dset = h5_file.create_dataset("particles/"+groupname+"/box/edges/step",(1,1), maxshape=(None,1), dtype='int64')
-    return dset
-        
+  #Box/edges/step   
   def h5_write_particles_box_edges_step_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=timestep
-      
-  def h5_read_particles_box_edges_step_dataset(self,filename,groupname):
-    group=filename['particles/'+groupname+'/box/edges']
-    return group['step']
 
   
   #####################################################################################################################################

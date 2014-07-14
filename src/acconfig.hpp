@@ -134,7 +134,7 @@
 #define PACKAGE_NAME "ESPResSo"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "ESPResSo 3.2.0-1088-g8a7f4df"
+#define PACKAGE_STRING "ESPResSo 3.2.0-1096-g91ba8ef"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "espresso"
@@ -143,7 +143,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "3.2.0-1088-g8a7f4df"
+#define PACKAGE_VERSION "3.2.0-1096-g91ba8ef"
 
 /* Whether Python is available */
 #define PYTHON_DEV /**/
@@ -170,7 +170,7 @@
 #define USE_NON_CONST 1
 
 /* Version number of package */
-#define VERSION "3.2.0-1088-g8a7f4df"
+#define VERSION "3.2.0-1096-g91ba8ef"
 
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */
