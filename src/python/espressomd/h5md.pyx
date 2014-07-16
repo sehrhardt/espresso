@@ -27,12 +27,10 @@ class h5md(object):
     return self.h5_file[dataset].attrs[name]
   
   def h5_create_dataset(self,h5_file,dataset,shape,Maxshape,Dtype):
-    #dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/charge",(1,1), maxshape=(None,1), dtype='f8')#xxxx
     dset = h5_file.create_dataset(dataset,shape, maxshape=Maxshape, dtype=Dtype)
     return dset
   
   def h5_read_dataset(self,h5_file,dataset_group,dataset_name):
-    #group=h5_file['particles/'+groupname+'/position']#xxxxxxxxxxx
     group=h5_file[dataset_group]
     return group[dataset_name]
         
@@ -517,48 +515,42 @@ class h5md(object):
   #####################################################################################################################################
   def h5_write_observable(self,timestep,value,observablename,groupname):
     try:
-      self.observables_step_dataset=self.h5_create_observable_step_dataset(self.h5_file,groupname,observablename)
+      self.observables_step_dataset=self.h5_create_dataset(self.h5_file,"observables/"+groupname+"/"+observablename+"/step",(1,1),(None,None),'int64')
     except:
       self.observables_step_dataset=self.h5_file['observables/'+groupname+'/'+observablename+'/step']
     self.h5_write_observable_step_dataset(self.observables_step_dataset,timestep)
      
     try:
-      self.observables_time_dataset=self.h5_create_observable_time_dataset(self.h5_file,groupname,observablename)
+      self.observables_time_dataset=self.h5_create_dataset(self.h5_file,"observables/"+groupname+"/"+observablename+"/time",(1,1),(None,None),'f8')
     except:
       self.observables_time_dataset=self.h5_file['observables/'+groupname+'/'+observablename+'/time'] 
     self.h5_write_observable_time_dataset(self.observables_time_dataset,timestep)
     
     try:
-      self.observables_value_dataset=self.h5_create_observable_value_dataset(self.h5_file,groupname,observablename)
+      self.observables_value_dataset=self.h5_create_dataset(self.h5_file,"observables/"+groupname+"/"+observablename+"/value",(1,1),(None,None),'f8')
     except:
       self.observables_value_dataset=self.h5_file['observables/'+groupname+'/'+observablename+'/value'] 
     self.h5_write_observable_value_dataset(self.observables_value_dataset,value,timestep)
           
   def h5_read_observable(self,timestep,observablename,groupname):  
     try:
-      self.observables_step_dataset=self.h5_read_observable_step_dataset(self.h5_file,groupname,observablename)
+      self.observables_step_dataset=self.h5_read_dataset(self.h5_file,'observables/'+groupname+'/'+observablename,'step')
     except:
       print "Error: No observables/"+groupname+"/"+observablename+"/step dataset in h5-file available"
       sys.exit() 
     try:
-      self.observables_time_dataset=self.h5_read_observable_time_dataset(self.h5_file,groupname,observablename)
+      self.observables_time_dataset=self.h5_read_dataset(self.h5_file,'observables/'+groupname+'/'+observablename,'time')
     except:
       print "Error: No observables/"+groupname+"/"+observablename+"/time dataset in h5-file available"
       sys.exit()    
     try:
-      self.observables_value_dataset=self.h5_read_observable_value_dataset(self.h5_file,groupname,observablename)
+      self.observables_value_dataset=self.h5_read_dataset(self.h5_file,'observables/'+groupname+'/'+observablename,'value')
     except:
       print "Error: No observables/"+groupname+"/"+observablename+"/value dataset in h5-file available"
-      sys.exit()    
+      sys.exit()     
   
-  
-  ########################################### OBSERVABLES CREATE/READ/WRITE DATASET FUNCTIONS ##########################################
-  
+  ################################################## OBSERVABLES WRITE DATASET FUNCTIONS #################################################
   #Observable/value
-  def h5_create_observable_value_dataset(self,h5_file,groupname,observablename):
-    dset = h5_file.create_dataset("observables/"+groupname+"/"+observablename+"/value",(1,1), maxshape=(None,None), dtype='f8')
-    return dset
-        
   def h5_write_observable_value_dataset(self,dataset,value,timestep):
     try:
       value_length=len(value)
@@ -567,81 +559,55 @@ class h5md(object):
     dataset.resize((timestep+1,value_length))
     for i in range(0,value_length):
       dataset[timestep,i]=value[i]
-      
-  def h5_read_observable_value_dataset(self,filename,groupname,observablename):
-    group=filename['observables/'+groupname+'/'+observablename]
-    return group['value']
 
   #Observable/time   
-  def h5_create_observable_time_dataset(self,h5_file,groupname,observablename):
-    dset = h5_file.create_dataset("observables/"+groupname+"/"+observablename+"/time",(1,1), maxshape=(None,None), dtype='f8')
-    return dset
-        
   def h5_write_observable_time_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=self.es.glob.time
 
-  def h5_read_observable_time_dataset(self,filename,groupname,observablename):
-    group=filename['observables/'+groupname+'/'+observablename]
-    return group['time']    
-      
   #Observable/step
-  def h5_create_observable_step_dataset(self,h5_file,groupname,observablename):
-    dset = h5_file.create_dataset("observables/"+groupname+"/"+observablename+"/step",(1,1), maxshape=(None,None), dtype='int64')
-    return dset
-        
   def h5_write_observable_step_dataset(self,dataset,timestep):
     if(dataset.len()<=timestep+1):
       dataset.resize((timestep+1,1))
     dataset[timestep]=timestep
-      
-  def h5_read_observable_step_dataset(self,filename,groupname,observablename):
-    group=filename['observables/'+groupname+'/'+observablename]
-    return group['step']     
-  
+
 
   #####################################################################################################################################  
   ##################################################### VMD PARAMETERS GROUP ########################################################## 
   #####################################################################################################################################
   def h5_write_vmd_parameters(self,groupname=""):
-    #indexOfSpecies and atomicnumber
+    #IndexOfSpecies and atomicnumber
     try:
-      self.parameters_vmd_atomicnumber_dataset=self.h5_create_parameters_vmd_atomicnumber_dataset(self.h5_file,groupname)
+      self.parameters_vmd_atomicnumber_dataset=self.h5_create_dataset(self.h5_file,"parameters/"+groupname+"/vmd_structure/atomicnumber",(1,1),(None,1),'int64')
     except:
       self.parameters_vmd_atomicnumber_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/atomicnumber']   
     try:
-      self.parameters_vmd_indexOfSpecies_dataset=self.h5_create_parameters_vmd_indexOfSpecies_dataset(self.h5_file,groupname)
+      self.parameters_vmd_indexOfSpecies_dataset=self.h5_create_dataset(self.h5_file,"parameters/"+groupname+"/vmd_structure/indexOfSpecies",(1,1),(None,1),'int64')
     except:
-      self.parameters_vmd_indexOfSpecies_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/indexOfSpecies']   
-      
+      self.parameters_vmd_indexOfSpecies_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/indexOfSpecies']         
     #Determine number of species/atomicnumber
     number_of_species=0
     n_part=self.es.glob.n_part
     for i in range(0,n_part): 
       if(self.es.part[i].type>number_of_species): 
         number_of_species=self.es.part[i].type
-    #Resize dataset
-    self.parameters_vmd_atomicnumber_dataset.resize((number_of_species+1,1))
-    self.parameters_vmd_indexOfSpecies_dataset.resize((number_of_species+1,1))
     #Assign values to indexOfSpecies/atomicnumber 
     species_array=np.zeros(number_of_species)
     for i in range(0,number_of_species):
       species_array[i]=i
     self.h5_write_parameters_vmd_atomicnumber_dataset(self.parameters_vmd_atomicnumber_dataset,species_array)
     self.h5_write_parameters_vmd_indexOfSpecies_dataset(self.parameters_vmd_indexOfSpecies_dataset,species_array)
-    
-    
+      
     #Bond_from and bond_to
     try:
-      self.parameters_vmd_bond_from_dataset=self.h5_create_parameters_vmd_bond_from_dataset(self.h5_file,groupname)
+      self.parameters_vmd_bond_from_dataset=self.h5_create_dataset(self.h5_file,"parameters/"+groupname+"/vmd_structure/bond_from",(1,1),(None,1),'int64')
     except:
       self.parameters_vmd_bond_from_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/bond_from'] 
     try:
-      self.parameters_vmd_bond_to_dataset=self.h5_create_parameters_vmd_bond_to_dataset(self.h5_file,groupname)
+      self.parameters_vmd_bond_to_dataset=self.h5_create_dataset(self.h5_file,"parameters/"+groupname+"/vmd_structure/bond_to",(1,1),(None,1),'int64')
     except:
-      self.parameters_vmd_bond_to_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/bond_to'] 
-    
+      self.parameters_vmd_bond_to_dataset=self.h5_file['parameters/'+groupname+'/vmd_structure/bond_to']     
     for i in range(0,n_part): 
       for j in range(0,len(self.es.part[i].bonds)):
         self.h5_write_parameters_vmd_bond_from_dataset(self.particles_position_value_dataset,i) 
@@ -649,17 +615,29 @@ class h5md(object):
                         
   
   def h5_read_vmd_parameters(self,groupname=""):  
+    #IndexOfSpecies and atomicnumber
     try:
-      self.parameters_vmd_atomicnumber_dataset=self.h5_read_parameters_vmd_atomicnumber_dataset(self.h5_file,groupname)
+      self.parameters_vmd_atomicnumber_dataset=self.h5_read_dataset(self.h5_file,'parameters/'+groupname+'/vmd_structure','atomicnumber')
     except:
       print "Error: No parameters/"+groupname+"/vmd_structure/atomicnumber dataset in h5-file available"
       sys.exit()      
     try:
-      self.parameters_vmd_indexOfSpecies_dataset=self.h5_read_parameters_vmd_indexOfSpecies_dataset(self.h5_file,groupname)
+      self.parameters_vmd_indexOfSpecies_dataset=self.h5_read_dataset(self.h5_file,'parameters/'+groupname+'/vmd_structure','indexOfSpecies')
     except:
       print "Error: No parameters/"+groupname+"/vmd_structure/indexOfSpecies dataset in h5-file available"
       sys.exit() 
-      #TODO read bond_from       
+    #Bond_from and bond_to 
+    try:
+      self.parameters_vmd_bond_from_dataset=self.h5_read_dataset(self.h5_file,'parameters/'+groupname+'/vmd_structure','bond_from')
+    except:
+      print "Error: No parameters/"+groupname+"/vmd_structure/bond_from dataset in h5-file available"
+      sys.exit()    
+    try:
+      self.parameters_vmd_bond_to_dataset=self.h5_read_dataset(self.h5_file,'parameters/'+groupname+'/vmd_structure','bond_to')
+    except:
+      print "Error: No parameters/"+groupname+"/vmd_structure/bond_to dataset in h5-file available"
+      sys.exit() 
+        
 
   class h5_write_vmd_parameters_extra(object):
     def __init__(self,self_h5md_class):
@@ -667,42 +645,42 @@ class h5md(object):
     #Chain
     def chain(self,array,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_create_parameters_vmd_chain_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"parameters/"+groupname+"/vmd_structure/chain",(1,1),(None,1),'S30')
       except:
         self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/chain']    
       self.self_h5md_class.h5_write_parameters_vmd_chain_dataset(self.self_h5md_class.parameters_vmd_chain_dataset,array)  
     #Name
     def name(self,array,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_create_parameters_vmd_name_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"parameters/"+groupname+"/vmd_structure/name",(1,1),(None,1),'S30')
       except:
         self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/name']    
       self.self_h5md_class.h5_write_parameters_vmd_name_dataset(self.self_h5md_class.parameters_vmd_name_dataset,array)
     #Resid
     def resid(self,array,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_create_parameters_vmd_resid_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"parameters/"+groupname+"/vmd_structure/resid",(1,1),(None,1),'int64')
       except:
         self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/resid']    
       self.self_h5md_class.h5_write_parameters_vmd_resid_dataset(self.self_h5md_class.parameters_vmd_resid_dataset,array)
     #Resname
     def resname(self,array,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_create_parameters_vmd_resname_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"parameters/"+groupname+"/vmd_structure/resname",(1,1),(None,1),'S30')
       except:
         self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/resname']    
       self.self_h5md_class.h5_write_parameters_vmd_resname_dataset(self.self_h5md_class.parameters_vmd_resname_dataset,array)
     #Segid
     def segid(self,array,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_create_parameters_vmd_segid_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"parameters/"+groupname+"/vmd_structure/segid",(1,1),(None,1),'S30')
       except:
         self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/segid']    
       self.self_h5md_class.h5_write_parameters_vmd_segid_dataset(self.self_h5md_class.parameters_vmd_segid_dataset,array)  
     #Type
     def type(self,array,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_create_parameters_vmd_type_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_create_dataset(self.self_h5md_class.h5_file,"parameters/"+groupname+"/vmd_structure/type",(1,1),(None,1),'S30')
       except:
         self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_file['parameters/'+groupname+'/vmd_structure/type']    
       self.self_h5md_class.h5_write_parameters_vmd_type_dataset(self.self_h5md_class.parameters_vmd_type_dataset,array) 
@@ -714,49 +692,49 @@ class h5md(object):
     #Chain  
     def chain(self,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_read_parameters_vmd_chain_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_chain_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'parameters/'+groupname+'/vmd_structure','chain')
       except:
         print "Error: No parameters/"+groupname+"/vmd_structure/chain dataset in h5-file available"
         sys.exit()
     #Name  
     def name(self,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_read_parameters_vmd_name_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_name_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'parameters/'+groupname+'/vmd_structure','name')
       except:
         print "Error: No parameters/"+groupname+"/vmd_structure/name dataset in h5-file available"
         sys.exit()  
     #Resid  
     def resid(self,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_read_parameters_vmd_resid_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_resid_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'parameters/'+groupname+'/vmd_structure','resid')
       except:
         print "Error: No parameters/"+groupname+"/vmd_structure/resid dataset in h5-file available"
         sys.exit() 
     #Resname  
     def resname(self,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_read_parameters_vmd_resname_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_resname_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'parameters/'+groupname+'/vmd_structure','resname')
       except:
         print "Error: No parameters/"+groupname+"/vmd_structure/resname dataset in h5-file available"
         sys.exit()
     #Segid  
     def segid(self,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_read_parameters_vmd_segid_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_segid_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'parameters/'+groupname+'/vmd_structure','segid')
       except:
         print "Error: No parameters/"+groupname+"/vmd_structure/segid dataset in h5-file available"
         sys.exit()
     #Type  
     def type(self,groupname=""):
       try:
-        self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_read_parameters_vmd_type_dataset(self.self_h5md_class.h5_file,groupname)
+        self.self_h5md_class.parameters_vmd_type_dataset=self.self_h5md_class.h5_read_dataset(self.self_h5md_class.h5_file,'parameters/'+groupname+'/vmd_structure','type')
       except:
         print "Error: No parameters/"+groupname+"/vmd_structure/type dataset in h5-file available"
         sys.exit() 
        
        
-  ############################################# VMD CREATE/READ/WRITE DATASET FUNCTIONS ############################################
-    
+  ##################################################### VMD WRITE DATASET FUNCTIONS ####################################################    
+  #TODO create/read bei mass,radius etc weg
   #Atomic number
   def h5_create_parameters_vmd_atomicnumber_dataset(self,h5_file,groupname):
     dset = h5_file.create_dataset("parameters/"+groupname+"/vmd_structure/atomicnumber",(1,1), maxshape=(None,1), dtype='int64')
