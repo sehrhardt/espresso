@@ -231,7 +231,6 @@ print "XXXXXXXXXXXX"
 print "XXXXXXXXXXXX"
 #es.interactions.FeneBond(1)
 #es.bondedInter[0].FeneBond.setParams(k=1.0, d_r_max=10.0,r_0=1.0)#xxx
-potFENE   = es.bondedInter.FeneBond(K=30.0, r0=0.0, rMax=1.5)
 #es.part[0].bonds=[[1,2]]
 print "XXXXXXXXXXXX"
 print "XXXXXXXXXXXX",es.part[0].bonds
