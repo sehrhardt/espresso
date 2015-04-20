@@ -51,7 +51,8 @@ PYXFILES =  \
 	interactions.pyx \
 	invalidateSystem.pyx \
 	thermostat.pyx \
-	utils.pyx
+	utils.pyx \
+	h5md.pyx
 
 PXDFILES = \
 	_espresso/globals.pxd \
