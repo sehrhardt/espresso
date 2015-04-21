@@ -49,11 +49,13 @@ for i in range(n_part):
 	system.part[i].quat=numpy.array([0.1,0.1,0.1,0.1])*[i*3,i*3,i*3,i*3]
 	system.part[i].id=i*7
 	system.part[i].q=7
-	system.part[i].virtual=2
+	#system.part[i].virtual=2
 	system.part[i].vs_relative=[2,2.3]
+	system.part[i].dip=numpy.array([0.1,0.1,0.1])*[i*3,i*3,i*3]
+	system.part[i].dipm=i*7.1
 system.box_l = [10,10,10]
 
-print("XXX",system.part[2].vs_relative)
+
 
 for i in range(n_time):
 	system.time=0.1*(i+1)
@@ -66,14 +68,16 @@ for i in range(n_time):
 	h5.h5_write_particles.omega_body(i)
 	h5.h5_write_particles.torque_lab(i)
 	h5.h5_write_particles.quat(i)
+	h5.h5_write_particles.dip(i)
+	h5.h5_write_particles.dipm(i)
 	h5.h5_write_particles.box(i)
 	h5.h5_write_observable(i,[2,3,4],"energies","Obs1")
 h5.h5_write_particles.type()
 h5.h5_write_particles.mass()
 h5.h5_write_particles.id()
 h5.h5_write_particles.q()
-h5.h5_write_particles.virtual()
-h5.h5_write_particles.vs_relative()
+#h5.h5_write_particles.virtual()
+h5.h5_write_particles.vs_relative() #Only virtual or vs_relative in myconfig
 
 # #H5MD: Write VMD parameters
 # h5.h5_write_vmd_parameters()
@@ -98,3 +102,6 @@ h5.h5_write_particles.vs_relative()
 #self_h5md_class
 #bond
 #box (x,1,1)(x,2,2)(x,3,3)
+#get box dimension, tensor like
+#self_h5md_class
+#deaktivate MASS
